@@ -8,12 +8,32 @@ interface FilterPanelProps {
 
 export function FilterPanel({ filters, onFiltersChange }: FilterPanelProps) {
     const handleStartDateChange = (value: string) => {
-        onFiltersChange({ ...filters, startDate: value });
+        if (!value) {
+            onFiltersChange({ ...filters, startDate: undefined });
+            return;
+        }
+
+        const startOfDay = new Date(value);
+        startOfDay.setHours(0, 0, 0, 0);
+        const formatted = startOfDay.toISOString().slice(0, 19).replace('T', ' ');
+
+        onFiltersChange({ ...filters, startDate: formatted });
     };
 
+
     const handleEndDateChange = (value: string) => {
-        onFiltersChange({ ...filters, endDate: value });
+        if (!value) {
+            onFiltersChange({ ...filters, endDate: undefined });
+            return;
+        }
+
+        const endOfDay = new Date(value);
+        endOfDay.setHours(23, 59, 59, 999);
+        const formatted = endOfDay.toISOString().slice(0, 19).replace('T', ' ');
+
+        onFiltersChange({ ...filters, endDate: formatted });
     };
+
 
     const handleCanalChange = (value: string) => {
         onFiltersChange({ ...filters, canal: value });
