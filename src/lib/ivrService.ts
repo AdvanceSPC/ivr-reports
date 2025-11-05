@@ -11,8 +11,8 @@ export interface IVRFilters {
 export async function fetchIVRData(filters: IVRFilters = {}): Promise<IVRRecord[]> {
     const params = new URLSearchParams();
     
-    if (filters.startDate) params.append('startDate', filters.startDate);
-    if (filters.endDate) params.append('endDate', filters.endDate);
+    if (filters.startDate) params.append('startDate', `${filters.startDate} 00:00:00`);
+    if (filters.endDate) params.append('endDate', `${filters.endDate} 23:59:59`);
     if (filters.canal) params.append('canal', filters.canal);
 
     const response = await fetch(`${API_URL}/api/ivr/data?${params.toString()}`);
