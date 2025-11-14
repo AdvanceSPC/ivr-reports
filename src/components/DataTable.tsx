@@ -8,7 +8,8 @@ interface DataTableProps {
 }
 
 export function DataTable({ data, isLoading }: DataTableProps) {
-    console.log("PROPS:", { data, isLoading });
+    console.log("=== DATOS COMPLETOS ===", data);
+    console.log("Primer registro:", data[0]);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const rowsPerPage = 25;
@@ -106,36 +107,36 @@ export function DataTable({ data, isLoading }: DataTableProps) {
                     <tbody className="bg-white divide-y divide-slate-200">
                         {currentData.map((record) => {
                             console.log("FECHA RECIBIDA:", record.ivrDateStart);
-                            return(
+                            return (
                                 <tr key={record.id} className="hover:bg-slate-50 transition">
-                                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    {formatDateTime(record.ivrDateStart)}
-                                </td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    {record.ivrDateEnd ? formatDateTime(record.ivrDateEnd) : '-'}
-                                </td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    {record.ivrUserId || '-'}
-                                </td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    {record.ivrIdentificacion || '-'}
-                                </td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    {record.ivrMenu || '-'}
-                                </td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    {record.ivrSubMenu || '-'}
-                                </td>
-                                <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
-                                    {record.ivrSubMenu3 || '-'}
-                                </td>
-                                <td className="px-4 py-4 whitespace-nowrap">
-                                    <CanalBadge canal={record.ivrCanal} />
-                                </td>
-                                <td className="px-4 py-4 whitespace-nowrap">
-                                    <StatusBadge status={record.ivrInteractionId} />
-                                </td>
-                            </tr>
+                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        {formatDateTime(record.ivrDateStart)}
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        {record.ivrDateEnd ? formatDateTime(record.ivrDateEnd) : '-'}
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        {record.ivrUserId || '-'}
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        {record.ivrIdentificacion || '-'}
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        {record.ivrMenu || '-'}
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        {record.ivrSubMenu || '-'}
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
+                                        {record.ivrSubMenu3 || '-'}
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap">
+                                        <CanalBadge canal={record.ivrCanal} />
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap">
+                                        <StatusBadge status={record.ivrInteractionId} />
+                                    </td>
+                                </tr>
                             );
                         })}
                     </tbody>
@@ -214,18 +215,40 @@ function StatusBadge({ status }: { status: string | null }) {
     );
 }
 
-function formatDateTime(dateStr: string): string {
-  if (!dateStr) return '-';
-  console.log("FORMATEANDO FECHA:", dateStr);
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) return '-';
-  return date.toLocaleString('es-ES', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+function formatDateTime(dateStr: string | null | undefined): string {
+    console.log("=== FORMATEANDO FECHA ===");
+    console.log("Valor recibido:", dateStr);
+    console.log("Tipo:", typeof dateStr);
+
+    if (!dateStr) {
+        console.log("Fecha vacía o null");
+        return '-';
+    }
+
+    try {
+        // Intentar parsear la fecha
+        const date = new Date(dateStr);
+        console.log("Date object:", date);
+        console.log("getTime():", date.getTime());
+        console.log("isNaN:", isNaN(date.getTime()));
+
+        if (isNaN(date.getTime())) {
+            console.error("Fecha inválida después de parsear");
+            return '-';
+        }
+
+        const formatted = date.toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+
+        console.log("Fecha formateada:", formatted);
+        return formatted;
+    } catch (error) {
+        console.error("Error al formatear fecha:", error);
+        return '-';
+    }
 }
-
-
