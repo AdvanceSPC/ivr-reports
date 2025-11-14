@@ -214,62 +214,17 @@ function StatusBadge({ status }: { status: string | null }) {
     );
 }
 
-function formatDateTime(dateStr:string | null | undefined): string {
-    if (!dateStr) return "-";
-
-    // Convertir a string siempre
-    dateStr = String(dateStr).trim();
-
-    // Invalidos
-    if (
-        dateStr === "" ||
-        dateStr.startsWith("0000") ||
-        dateStr.toLowerCase() === "null" ||
-        dateStr.toLowerCase() === "undefined"
-    ) {
-        return "-";
-    }
-
-    // Si viene "2025-11-12 10:19:57"
-    if (dateStr.includes(" ")) {
-        const [datePart, timePart] = dateStr.split(" ");
-        if (datePart && timePart) {
-            const [year, month, day] = datePart.split("-");
-            const [hour, minute, second] = timePart.split(":");
-            if (year && month && day && hour && minute && second) {
-                const date = new Date(
-                    Number(year),
-                    Number(month) - 1,
-                    Number(day),
-                    Number(hour),
-                    Number(minute),
-                    Number(second)
-                );
-                return format(date);
-            }
-        }
-    }
-
-    // Si viene en ISO: 2025-11-12T10:19:57.000Z
-    if (dateStr.includes("T")) {
-        const iso = new Date(dateStr);
-        if (!isNaN(iso.getTime())) {
-            return format(iso);
-        }
-    }
-
-    return "-";
-}
-
-function format(date: any): string {
-    return date.toLocaleString("es-ES", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-    });
+function formatDateTime(dateStr: string): string {
+  if (!dateStr) return '-';
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '-';
+  return date.toLocaleString('es-ES', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 
