@@ -8,8 +8,6 @@ interface DataTableProps {
 }
 
 export function DataTable({ data, isLoading }: DataTableProps) {
-    console.log("=== DATOS COMPLETOS ===", data);
-    console.log("Primer registro:", data[0]);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const rowsPerPage = 25;
@@ -106,7 +104,7 @@ export function DataTable({ data, isLoading }: DataTableProps) {
                     </thead>
                     <tbody className="bg-white divide-y divide-slate-200">
                         {currentData.map((record) => {
-                            console.log("FECHA RECIBIDA:", record.ivrDateStart);
+                            //console.log("FECHA RECIBIDA:", record.ivrDateStart);
                             return (
                                 <tr key={record.id} className="hover:bg-slate-50 transition">
                                     <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
@@ -216,39 +214,23 @@ function StatusBadge({ status }: { status: string | null }) {
 }
 
 function formatDateTime(dateStr: string | null | undefined): string {
-    console.log("=== FORMATEANDO FECHA ===");
-    console.log("Valor recibido:", dateStr);
-    console.log("Tipo:", typeof dateStr);
-
-    if (!dateStr) {
-        console.log("Fecha vacía o null");
-        return '-';
-    }
+    if (!dateStr) return '-';
 
     try {
-        // Intentar parsear la fecha
-        const date = new Date(dateStr);
-        console.log("Date object:", date);
-        console.log("getTime():", date.getTime());
-        console.log("isNaN:", isNaN(date.getTime()));
+        const dateStrLocal = dateStr.replace('Z', '');
+        const date = new Date(dateStrLocal);
 
-        if (isNaN(date.getTime())) {
-            console.error("Fecha inválida después de parsear");
-            return '-';
-        }
+        if (isNaN(date.getTime())) return '-';
 
-        const formatted = date.toLocaleString('es-ES', {
+        return date.toLocaleString('es-ES', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
+            second: '2-digit',
         });
-
-        console.log("Fecha formateada:", formatted);
-        return formatted;
     } catch (error) {
-        console.error("Error al formatear fecha:", error);
         return '-';
     }
 }
