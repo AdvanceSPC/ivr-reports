@@ -8,6 +8,7 @@ interface DataTableProps {
 }
 
 export function DataTable({ data, isLoading }: DataTableProps) {
+    console.log("DATOS RECIBIDOS EN TABLA:", data);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const rowsPerPage = 25;
