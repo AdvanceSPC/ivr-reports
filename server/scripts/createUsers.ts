@@ -3,9 +3,9 @@ import pool from '../lib/db';
 
 async function createUser() {
     try {
-        const usrName = 'Ruben Rivadeneira';
-        const usrUserName = 'rrivadeneira';
-        const usrPassword = 'rrivadeneira2025$$';
+        const usrName = 'Luz Sisa';
+        const usrUserName = 'lsisa';
+        const usrPassword = 'lsisa2025$$';
 
         // Hashear la contraseña
         const hashedPassword = await bcrypt.hash(usrPassword, 10);

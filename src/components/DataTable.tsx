@@ -212,13 +212,26 @@ function StatusBadge({ status }: { status: string | null }) {
 
 function formatDateTime(dateStr: string): string {
     if (!dateStr) return '-';
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return '-';
+    
+    const [datePart, timePart] = dateStr.split(' ');
+    const [year, month, day] = datePart.split('-')
+    const [hour, minute, second] = timePart.split(':');
+
+    const date = new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day),
+        Number(hour),
+        Number(minute),
+        Number(second)
+    );
+    
     return date.toLocaleString('es-ES', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
+        second: '2-digit',
     });
 }
