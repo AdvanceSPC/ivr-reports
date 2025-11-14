@@ -216,6 +216,7 @@ function StatusBadge({ status }: { status: string | null }) {
 
 function formatDateTime(dateStr: string): string {
   if (!dateStr) return '-';
+  console.log("FORMATEANDO FECHA:", dateStr);
   const date = new Date(dateStr);
   if (isNaN(date.getTime())) return '-';
   return date.toLocaleString('es-ES', {
