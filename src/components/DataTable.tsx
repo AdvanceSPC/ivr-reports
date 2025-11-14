@@ -103,8 +103,10 @@ export function DataTable({ data, isLoading }: DataTableProps) {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-slate-200">
-                        {currentData.map((record) => (
-                            <tr key={record.id} className="hover:bg-slate-50 transition">
+                        {currentData.map((record) => {
+                            console.log("FECHA RECIBIDA:", record.ivrDateStart);
+                            return(
+                                <tr key={record.id} className="hover:bg-slate-50 transition">
                                 <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-900">
                                     {formatDateTime(record.ivrDateStart)}
                                 </td>
@@ -133,7 +135,8 @@ export function DataTable({ data, isLoading }: DataTableProps) {
                                     <StatusBadge status={record.ivrInteractionId} />
                                 </td>
                             </tr>
-                        ))}
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
@@ -210,33 +213,54 @@ function StatusBadge({ status }: { status: string | null }) {
     );
 }
 
-function formatDateTime(dateStr: string | null): string {
-    if (!dateStr || typeof dateStr !== "string") return "-";
+function formatDateTime(dateStr:string | null | undefined): string {
+    if (!dateStr) return "-";
 
-    if (dateStr.startsWith("0000") || dateStr.includes("null")) return "-";
+    // Convertir a string siempre
+    dateStr = String(dateStr).trim();
 
-    const parts = dateStr.split(" ");
-
-    if (parts.length < 2) return "-";
-
-    const [datePart, timePart] = parts;
-
-    const [year, month, day] = datePart.split("-");
-    const [hour, minute, second] = timePart.split(":");
-
-    if (!year || !month || !day || !hour || !minute || !second) {
+    // Invalidos
+    if (
+        dateStr === "" ||
+        dateStr.startsWith("0000") ||
+        dateStr.toLowerCase() === "null" ||
+        dateStr.toLowerCase() === "undefined"
+    ) {
         return "-";
     }
 
-    const date = new Date(
-        Number(year),
-        Number(month) - 1,
-        Number(day),
-        Number(hour),
-        Number(minute),
-        Number(second)
-    );
+    // Si viene "2025-11-12 10:19:57"
+    if (dateStr.includes(" ")) {
+        const [datePart, timePart] = dateStr.split(" ");
+        if (datePart && timePart) {
+            const [year, month, day] = datePart.split("-");
+            const [hour, minute, second] = timePart.split(":");
+            if (year && month && day && hour && minute && second) {
+                const date = new Date(
+                    Number(year),
+                    Number(month) - 1,
+                    Number(day),
+                    Number(hour),
+                    Number(minute),
+                    Number(second)
+                );
+                return format(date);
+            }
+        }
+    }
 
+    // Si viene en ISO: 2025-11-12T10:19:57.000Z
+    if (dateStr.includes("T")) {
+        const iso = new Date(dateStr);
+        if (!isNaN(iso.getTime())) {
+            return format(iso);
+        }
+    }
+
+    return "-";
+}
+
+function format(date: any): string {
     return date.toLocaleString("es-ES", {
         year: "numeric",
         month: "2-digit",
@@ -246,4 +270,5 @@ function formatDateTime(dateStr: string | null): string {
         second: "2-digit"
     });
 }
+
 
