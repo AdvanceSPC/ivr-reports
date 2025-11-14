@@ -210,12 +210,23 @@ function StatusBadge({ status }: { status: string | null }) {
     );
 }
 
-function formatDateTime(dateStr: string): string {
-    if (!dateStr) return '-';
-    
-    const [datePart, timePart] = dateStr.split(' ');
-    const [year, month, day] = datePart.split('-')
-    const [hour, minute, second] = timePart.split(':');
+function formatDateTime(dateStr: string | null): string {
+    if (!dateStr || typeof dateStr !== "string") return "-";
+
+    if (dateStr.startsWith("0000") || dateStr.includes("null")) return "-";
+
+    const parts = dateStr.split(" ");
+
+    if (parts.length < 2) return "-";
+
+    const [datePart, timePart] = parts;
+
+    const [year, month, day] = datePart.split("-");
+    const [hour, minute, second] = timePart.split(":");
+
+    if (!year || !month || !day || !hour || !minute || !second) {
+        return "-";
+    }
 
     const date = new Date(
         Number(year),
@@ -225,13 +236,14 @@ function formatDateTime(dateStr: string): string {
         Number(minute),
         Number(second)
     );
-    
-    return date.toLocaleString('es-ES', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
+
+    return date.toLocaleString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
     });
 }
+
