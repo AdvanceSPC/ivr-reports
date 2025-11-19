@@ -58,20 +58,23 @@ function escapeCSV(str: string): string {
 }
 
 function formatDateTime(dateStr: string | null | undefined): string {
-    if (!dateStr) return '';
+    if (!dateStr) return '-';
 
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return '';
+    try {
+        const dateStrLocal = dateStr.replace('Z', '');
+        const date = new Date(dateStrLocal);
 
-    const formatted = date.toLocaleString('es-ES', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-    });
+        if (isNaN(date.getTime())) return '-';
 
-    return formatted.replace(',', '');
+        return date.toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        });
+    } catch (error) {
+        return '-';
+    }
 }
